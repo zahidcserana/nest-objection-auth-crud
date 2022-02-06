@@ -7,6 +7,8 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
+  UseInterceptors,
 } from '@nestjs/common'
 import { UserModel } from 'src/database/models/user.model'
 import { UsersService } from './users.service'
@@ -16,8 +18,12 @@ export class UsersController {
   constructor (private usersService: UsersService) {}
 
   @Get()
-  async findAll () {
-    return this.usersService.findAll()
+  async findAll (
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('search') search?: string,
+  ) {
+    return this.usersService.findAll(page, limit, search)
   }
 
   @Get(':id')

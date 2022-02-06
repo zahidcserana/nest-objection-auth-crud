@@ -1,13 +1,17 @@
 import * as Knex from 'knex'
 
-const tableName = 'tags'
+const tableName = 'categories'
 
 export async function up (knex: Knex) {
   return knex.schema.createTable(tableName, t => {
-    // this creates an "id" column that gets auto-incremented
+    // this creates an "id" column that gets autoincremented
     t.increments()
 
     t.string('name')
+      .notNullable()
+      .unique()
+
+    t.string('slug')
       .notNullable()
       .unique()
   })

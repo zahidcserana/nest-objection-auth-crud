@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { ModelClass, transaction } from 'objection'
-import { UserModel } from 'src/database/models/user.model'
-import * as bcrypt from 'bcrypt'
-import { jwtConstants, query } from '../auth/constants'
+import { query } from '../auth/constants'
+import { VariantProductModel } from 'src/database/models/variant_product.model'
 
 @Injectable()
-export class UsersService {
+export class VariantProductsService {
   constructor (
-    @Inject('UserModel') private modelClass: ModelClass<UserModel>,
+    @Inject('VariantProductModel')
+    private modelClass: ModelClass<VariantProductModel>,
   ) {}
 
   findAll (page: number, limit: number, search: string) {
@@ -19,42 +19,35 @@ export class UsersService {
     if (search == '') {
       return this.modelClass
         .query()
-        .select('id', 'name', 'username', 'about', 'email')
+        .withGraphFetched('[product, color, size]')
         .page(pageNo - 1, pageLimit)
     }
 
     return this.modelClass
       .query()
-      .select('id', 'name', 'username', 'about', 'email')
+      .withGraphFetched('[product, color, size]')
       .page(pageNo - 1, pageLimit)
-      .where('username', 'like', search)
-      .orWhere('name', 'like', search)
-      .orWhere('email', 'like', search)
   }
 
   findOneById (id: number) {
     return this.modelClass
       .query()
-      .select('id', 'name', 'username', 'about', 'email')
       .findById(id)
+      .withGraphFetched('[product, color, size]')
   }
 
-  findOne (username: string) {
-    return this.modelClass.query().findOne({ username })
+  findOne (barcode: string) {
+    return this.modelClass.query().findOne({ barcode })
   }
 
-  async create (props: Partial<UserModel>) {
-    const password = props.password ? props.password : '123456'
-
-    props.password = await bcrypt.hash(password, jwtConstants.saltOrRounds)
-
+  async create (props: Partial<VariantProductModel>) {
     return this.modelClass
       .query()
       .insert(props)
       .returning('*')
   }
 
-  update (id: number, props: Partial<UserModel>) {
+  update (id: number, props: Partial<VariantProductModel>) {
     return this.modelClass
       .query()
       .patch(props)

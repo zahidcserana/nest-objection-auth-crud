@@ -1,13 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { ModelClass, transaction } from 'objection'
-import { UserModel } from 'src/database/models/user.model'
-import * as bcrypt from 'bcrypt'
-import { jwtConstants, query } from '../auth/constants'
+import { query } from '../auth/constants'
+import { CategoryModel } from 'src/database/models/category.model'
 
 @Injectable()
-export class UsersService {
+export class CategoriesService {
   constructor (
-    @Inject('UserModel') private modelClass: ModelClass<UserModel>,
+    @Inject('CategoryModel') private modelClass: ModelClass<CategoryModel>,
   ) {}
 
   findAll (page: number, limit: number, search: string) {
@@ -19,42 +18,53 @@ export class UsersService {
     if (search == '') {
       return this.modelClass
         .query()
-        .select('id', 'name', 'username', 'about', 'email')
+        .select('id', 'name', 'slug')
         .page(pageNo - 1, pageLimit)
     }
 
     return this.modelClass
       .query()
-      .select('id', 'name', 'username', 'about', 'email')
+      .select('id', 'name', 'slug')
       .page(pageNo - 1, pageLimit)
-      .where('username', 'like', search)
-      .orWhere('name', 'like', search)
-      .orWhere('email', 'like', search)
+      .where('name', 'like', search)
+      .orWhere('slug', 'like', search)
+  }
+
+  list (search: string) {
+    search = search ? '%' + search + '%' : ''
+
+    if (search == '') {
+      return this.modelClass
+        .query()
+        .select('id', 'name as label', 'slug')
+      }
+
+    return this.modelClass
+      .query()
+      .select('id', 'name as label', 'slug')
+      .where('name', 'like', search)
+      .orWhere('slug', 'like', search)
   }
 
   findOneById (id: number) {
     return this.modelClass
       .query()
-      .select('id', 'name', 'username', 'about', 'email')
+      .select('id', 'name', 'slug')
       .findById(id)
   }
 
-  findOne (username: string) {
-    return this.modelClass.query().findOne({ username })
+  findOne (slug: string) {
+    return this.modelClass.query().findOne({ slug })
   }
 
-  async create (props: Partial<UserModel>) {
-    const password = props.password ? props.password : '123456'
-
-    props.password = await bcrypt.hash(password, jwtConstants.saltOrRounds)
-
+  async create (props: Partial<CategoryModel>) {
     return this.modelClass
       .query()
       .insert(props)
       .returning('*')
   }
 
-  update (id: number, props: Partial<UserModel>) {
+  update (id: number, props: Partial<CategoryModel>) {
     return this.modelClass
       .query()
       .patch(props)

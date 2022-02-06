@@ -1,7 +1,7 @@
-import { knex } from 'knex'
+import * as Knex from 'knex'
 import { ThemeModel } from '../models/theme.model'
 
-export async function seed (knex): Promise<any> {
+export async function seed (knex: Knex): Promise<any> {
   await ThemeModel.query(knex).insert([
     {
       name: 'Dark Purple',

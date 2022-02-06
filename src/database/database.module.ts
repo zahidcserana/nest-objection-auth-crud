@@ -6,8 +6,32 @@ import { NoteModel } from './models/note.model'
 import { ThemeModel } from './models/theme.model'
 import { NoteTagModel } from './models/note-tag.model'
 import { UserModel } from './models/user.model'
+import { ColorModel } from './models/color.model'
+import { SizeModel } from './models/size.model'
+import { CategoryModel } from './models/category.model'
+import { ProductModel } from './models/product.model'
+import { VariantProductModel } from './models/variant_product.model'
+import { ImageModel } from './models/image.model'
+import { OrderModel } from './models/order.model'
+import { OrderItemModel } from './models/order_item.model'
+import { CustomerModel } from './models/customer.model'
 
-const models = [TagModel, NoteModel, ThemeModel, NoteTagModel, UserModel]
+const models = [
+  TagModel,
+  NoteModel,
+  ThemeModel,
+  NoteTagModel,
+  UserModel,
+  ColorModel,
+  SizeModel,
+  CategoryModel,
+  ProductModel,
+  VariantProductModel,
+  ImageModel,
+  OrderModel,
+  OrderItemModel,
+  CustomerModel
+]
 
 const modelProviders = models.map(model => {
   return {

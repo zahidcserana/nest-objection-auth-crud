@@ -1,25 +1,19 @@
 import * as Knex from 'knex'
 
-const tableName = 'users'
+const tableName = 'variant_products'
 
 export async function up (knex: Knex) {
   return knex.schema.createTable(tableName, t => {
     // this creates an "id" column that gets autoincremented
     t.increments()
-
-    t.string('name').notNullable()
-
-    t.string('email')
-      .notNullable()
-      .unique()
-
-    t.string('username')
-      .notNullable()
-      .unique()
-
-    t.string('password').notNullable()
-
-    t.string('about')
+    t.integer('product_id')
+    t.integer('color_id')
+    t.integer('size_id')
+    t.integer('quantity')
+    t.integer('po_quantity')
+    t.integer('ready_quantity')
+    t.integer('delivered_quantity')
+    t.boolean('is_default')
   })
 }
 

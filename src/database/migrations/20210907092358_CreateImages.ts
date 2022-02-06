@@ -1,15 +1,16 @@
 import * as Knex from 'knex'
 
-const tableName = 'tags'
+const tableName = 'images'
 
 export async function up (knex: Knex) {
   return knex.schema.createTable(tableName, t => {
-    // this creates an "id" column that gets auto-incremented
+    // this creates an "id" column that gets autoincremented
     t.increments()
-
-    t.string('name')
-      .notNullable()
-      .unique()
+    t.integer('productId')
+    t.integer('variantProductId')
+    t.string('model')
+    t.string('file')
+    t.boolean('is_default')
   })
 }
 
